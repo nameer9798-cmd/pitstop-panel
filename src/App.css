@@ -1,0 +1,212 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+.App {
+  width: 95%;
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1400px;
+}
+
+form input,
+form select {
+  flex: 1 1 200px;
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+form button {
+  padding: 0.6rem 1.2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  margin-bottom: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+thead {
+  background-color: #f1f1f1;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
+}
+/* Reset default margins and set full height */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6f8;
+}
+
+/* Make the root container fill the screen */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Center logo and title */
+.App img {
+  max-width: 120px;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  margin-bottom: 2rem;
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* Form layout */
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+form input,
+form select {
+  flex: 1 1 200px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+form button {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+/* Search and print buttons */
+input[type="text"] {
+  width: 100%;
+  max-width: 900px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 1400px;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  max-width: 1500px;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 1400px;
+}
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+thead {
+  background-color: #f1f1f1;
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa;
