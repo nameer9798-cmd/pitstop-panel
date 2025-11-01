@@ -1,121 +1,132 @@
-import { useState, useEffect } from 'react';
-import type { ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect } from 'react';
+import type { ChangeEvent, FormEvent, JSX } from 'react';
 import './App.css';
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxRTLnxVHwxf4FuE851ALXQeSxbKXZ26ufBmy1byRNqb_4yKkJZsc7RynKKslKjft2M/exec";
+const API_URL = 'https://script.google.com/macros/s/AKfycbxRTLnxVHwxf4FuE851ALXQeSxbKXZ26ufBmy1byRNqb_4yKkJZsc7RynKKslKjft2M/exec';
 
-type Job = {
+interface Job {
+  serial: number;
   customer: string;
   plate: string;
   phone: string;
   status: string;
-};
+}
 
-export default function App() {
+function App(): JSX.Element {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [form, setForm] = useState<Job>({
-    customer: '',
-    plate: '',
-    phone: '',
-    status: 'Pending',
-  });
-  const [search, setSearch] = useState<string>('');
+  const [customer, setCustomer] = useState<string>('');
+  const [plate, setPlate] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [status, setStatus] = useState<string>('');
 
   useEffect(() => {
-    fetch(API_URL)
-      .then(res => res.json())
-      .then((data: Job[]) => setJobs(data))
-      .catch(err => console.error("Error fetching jobs:", err));
+    void fetchJobs();
   }, []);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const fetchJobs = async (): Promise<void> => {
+    try {
+      const response: Response = await fetch(API_URL);
+      const data: unknown = await response.json();
+
+      if (Array.isArray(data)) {
+        const parsedJobs: Job[] = data.map((item) => ({
+          serial: Number(item.serial),
+          customer: String(item.customer),
+          plate: String(item.plate),
+          phone: String(item.phone),
+          status: String(item.status),
+        }));
+        setJobs(parsedJobs);
+      } else {
+        console.error('Unexpected response format:', data);
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleAddJob = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify(form),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(() => {
-        setJobs([...jobs, form]);
-        setForm({ customer: '', plate: '', phone: '', status: 'Pending' });
+
+    const job = {
+      customer,
+      plate,
+      phone,
+      status,
+    };
+
+    try {
+      const response: Response = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify(job),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+
+      const result: string = await response.text();
+      console.log(result);
+
+      setCustomer('');
+      setPlate('');
+      setPhone('');
+      setStatus('');
+      void fetchJobs();
+    } catch (error) {
+      console.error('Error adding job:', error);
+    }
   };
-
-  const filteredJobs = jobs.filter(job =>
-    job.customer.toLowerCase().includes(search.toLowerCase()) ||
-    job.plate.toLowerCase().includes(search.toLowerCase()) ||
-    job.phone.includes(search)
-  );
-
-  const handlePrint = () => window.print();
 
   return (
     <div className="App">
-      <div style={{ textAlign: 'center' }}>
-        <img
-          src="/logo.png"
-          alt="Pitstop Logo"
-          style={{ maxHeight: '80px', marginBottom: '1rem' }}
-        />
-      </div>
-
       <h1>PITSTOP Workshop Panel</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleAddJob} className="job-form">
         <input
-          name="customer"
+          type="text"
           placeholder="Customer Name"
-          value={form.customer}
-          onChange={handleChange}
+          value={customer}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setCustomer(e.target.value)}
           required
         />
         <input
-          name="plate"
+          type="text"
           placeholder="Plate Number"
-          value={form.plate}
-          onChange={handleChange}
+          value={plate}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setPlate(e.target.value)}
           required
         />
         <input
-          name="phone"
+          type="text"
           placeholder="Phone Number"
-          value={form.phone}
-          onChange={handleChange}
+          value={phone}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}
           required
         />
-        <select name="status" value={form.status} onChange={handleChange}>
-          <option>Pending</option>
-          <option>In Progress</option>
-          <option>Completed</option>
-        </select>
+        <input
+          type="text"
+          placeholder="Status"
+          value={status}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setStatus(e.target.value)}
+          required
+        />
         <button type="submit">Add Job</button>
       </form>
 
-      <input
-        type="text"
-        placeholder="Search by customer, plate, or phone"
-        value={search}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
-      />
-
-      <button onClick={handlePrint}>🖨️ Print Job Cards</button>
-
-      <table>
+      <table className="job-table">
         <thead>
           <tr>
+            <th>SL No.</th>
             <th>Customer</th>
-            <th>Plate</th>
-            <th>Phone</th>
+            <th>Plate Number</th>
+            <th>Phone No.</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {filteredJobs.map((job, index) => (
-            <tr key={index} style={{ backgroundColor: getStatusColor(job.status) }}>
+          {jobs.map((job) => (
+            <tr key={job.serial}>
+              <td>{job.serial}</td>
               <td>{job.customer}</td>
               <td>{job.plate}</td>
               <td>{job.phone}</td>
@@ -128,11 +139,4 @@ export default function App() {
   );
 }
 
-function getStatusColor(status: string): string {
-  switch (status) {
-    case 'Pending': return '#fff8e1';       // light yellow
-    case 'In Progress': return '#e3f2fd';   // light blue
-    case 'Completed': return '#e8f5e9';     // light green
-    default: return 'white';
-  }
-}
+export default App;
