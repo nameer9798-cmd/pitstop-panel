@@ -1,4 +1,5 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import './App.css';
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxRTLnxVHwxf4FuE851ALXQeSxbKXZ26ufBmy1byRNqb_4yKkJZsc7RynKKslKjft2M/exec";
@@ -58,7 +59,7 @@ export default function App() {
         <img
           src="/logo.png"
           alt="Pitstop Logo"
-          style={{ maxheight: '80px', marginBottom: '1rem' }}
+          style={{ maxHeight: '80px', marginBottom: '1rem' }}
         />
       </div>
 
