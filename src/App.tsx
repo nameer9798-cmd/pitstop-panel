@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import type { ChangeEvent, FormEvent, JSX } from 'react';
+import { useState, useEffect } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import './App.css';
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbxRTLnxVHwxf4FuE851ALXQeSxbKXZ26ufBmy1byRNqb_4yKkJZsc7RynKKslKjft2M/exec';
@@ -10,14 +10,17 @@ interface Job {
   plate: string;
   phone: string;
   status: string;
+  serviceType: string;
 }
 
-function App(): JSX.Element {
+const App: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [customer, setCustomer] = useState<string>('');
   const [plate, setPlate] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
   const [status, setStatus] = useState<string>('');
+  const [serviceType, setServiceType] = useState<string>('Tyre Services');
+  const [filterStatus, setFilterStatus] = useState<string>('All');
 
   useEffect(() => {
     void fetchJobs();
@@ -35,6 +38,7 @@ function App(): JSX.Element {
           plate: String(item.plate),
           phone: String(item.phone),
           status: String(item.status),
+          serviceType: String(item.serviceType ?? '')
         }));
         setJobs(parsedJobs);
       } else {
@@ -53,6 +57,7 @@ function App(): JSX.Element {
       plate,
       phone,
       status,
+      serviceType
     };
 
     try {
@@ -60,8 +65,8 @@ function App(): JSX.Element {
         method: 'POST',
         body: JSON.stringify(job),
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'
+        }
       });
 
       const result: string = await response.text();
@@ -71,11 +76,16 @@ function App(): JSX.Element {
       setPlate('');
       setPhone('');
       setStatus('');
+      setServiceType('Tyre Services');
       void fetchJobs();
     } catch (error) {
       console.error('Error adding job:', error);
     }
   };
+
+  const filteredJobs = filterStatus === 'All'
+    ? jobs
+    : jobs.filter((job) => job.status === filterStatus);
 
   return (
     <div className="App">
@@ -110,8 +120,37 @@ function App(): JSX.Element {
           onChange={(e: ChangeEvent<HTMLInputElement>) => setStatus(e.target.value)}
           required
         />
+
+        <div className="form-group">
+          <label htmlFor="serviceType" className="centered-label">Types of Services</label>
+          <select
+            id="serviceType"
+            value={serviceType}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => setServiceType(e.target.value)}
+            className="form-input"
+            required
+          >
+            <option value="Tyre Services">Tyre Services</option>
+            <option value="Oil Services">Oil Services</option>
+          </select>
+        </div>
+
         <button type="submit">Add Job</button>
       </form>
+
+      <div className="filter-bar">
+        <select
+          id="statusFilter"
+          value={filterStatus}
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilterStatus(e.target.value)}
+          className="form-input"
+        >
+          <option value="All">Filter by Status</option>
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
 
       <table className="job-table">
         <thead>
@@ -121,16 +160,18 @@ function App(): JSX.Element {
             <th>Plate Number</th>
             <th>Phone No.</th>
             <th>Status</th>
+            <th>Service Type</th>
           </tr>
         </thead>
         <tbody>
-          {jobs.map((job) => (
+          {filteredJobs.map((job) => (
             <tr key={job.serial}>
               <td>{job.serial}</td>
               <td>{job.customer}</td>
               <td>{job.plate}</td>
               <td>{job.phone}</td>
               <td>{job.status}</td>
+              <td>{job.serviceType}</td>
             </tr>
           ))}
         </tbody>
